@@ -64,7 +64,7 @@ class Annotation extends Obj
         } elseif (is_string($value)) {
             $q = '"';
             $value = $q.str_replace($q, '\\"', $value).$q;
-        } elseif (null === $value) {
+        } elseif (null === $value && !$topLevel) {
             $value = 'NULL';
         } elseif (is_array($value)) {
             $tmp = [];
