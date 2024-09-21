@@ -1,0 +1,33 @@
+{
+	"name" : "ntlab/php-obj",
+	"type" : "library",
+	"description" : "A PHP object representation as string array, javascript, annotation, or YAML",
+	"keywords" : [
+		"array",
+		"javascript",
+		"annotation",
+		"YAML"
+	],
+	"homepage" : "https://github.com/tohenk/php-obj",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Toha",
+			"email" : "tohenk@yahoo.com",
+			"role" : "Developer"
+		}
+	],
+    "scripts": {
+        "test": "phpunit"
+    },
+	"require" : {
+		"php" : ">=7.2"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "^8.5 || ^9.5"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"NTLAB\\Object\\" : "src/"
+		}
+	}
+}
