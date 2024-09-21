@@ -67,7 +67,7 @@ class YAML extends Obj
                     $pad = $inline_size - strlen($k) - strlen($spacer) - 3; // colon and separator
                     $x = $pad > 0 && $level >= 0 ? str_repeat(' ', $pad) : '';
                     if ($inline && $this->canBeInlined($v)) {
-                        $v = explode("\n", $this->convert($v));
+                        $v = explode("\n", $this->convert($v, -1));
                         $tmp[] = $spacer.sprintf('%s: %s{%s}', $k, $x, implode(', ', $v));
                     } else {
                         if ($this->isInline($v)) {
