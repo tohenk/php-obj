@@ -27,11 +27,11 @@
 namespace NTLAB\Object;
 
 /**
- * Represents PHP object as array.
+ * Represents PHP object as string.
  *
  * @author Toha <tohenk@yahoo.com>
  */
-class Arr extends Obj
+class PHP extends Obj
 {
     /**
      * (non-PHPdoc)
@@ -39,7 +39,7 @@ class Arr extends Obj
      */
     public function convert($value, $level = 0)
     {
-        if ($value instanceof Arr) {
+        if ($value instanceof PHP) {
             $value = (string) $value;
         } elseif (is_bool($value)) {
             $value = $value ? 'true' : 'false';

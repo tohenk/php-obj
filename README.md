@@ -5,25 +5,25 @@
 [![Total Downloads](https://poser.pugx.org/tohenk/php-obj/downloads.svg)](https://packagist.org/packages/ntlab/php-obj) 
 [![License](https://poser.pugx.org/tohenk/php-obj/license.svg)](https://packagist.org/packages/ntlab/php-obj)
 
-Represent PHP object such as array as string, javascript, annotation, or YAML.
+Represent PHP object as string, javascript, annotation, or YAML.
 
 ## Examples
 
-* Represent array as string
+* Represent PHP object as string
 
   ```php
   <?php
 
-  use NTLAB\Object\Arr;
+  use NTLAB\Object\PHP;
 
-  $a = new Arr([1, 2, 3], ['inline' => true]);
+  $a = new PHP([1, 2, 3], ['inline' => true]);
   echo (string) $a; // [1, 2, 3]
 
-  $a = new Arr(['name' => 'Apple', 'color' => 'Red', 'description' => 'It\'s yummy...'], ['inline' => true]);
+  $a = new PHP(['name' => 'Apple', 'color' => 'Red', 'description' => 'It\'s yummy...'], ['inline' => true]);
   echo (string) $a; // ['name' => 'Apple', 'color' => 'Red', 'description' => 'It\'s yummy...']
   ```
 
-* Represent array as annotation
+* Represent PHP object as annotation
 
   ```php
   <?php
@@ -34,7 +34,7 @@ Represent PHP object such as array as string, javascript, annotation, or YAML.
   echo (string) $a; // @Fruit(name="Apple", color="Red", description="It's yummy...")
   ```
 
-* Represent array as javascript
+* Represent PHP object as javascript
 
   ```php
   <?php
@@ -45,7 +45,7 @@ Represent PHP object such as array as string, javascript, annotation, or YAML.
   echo (string) $a; // {name: 'Apple', color: 'Red', description: 'It\'s yummy...'}
   ```
 
-  * Represent array as YAML
+  * Represent PHP object as YAML
 
   ```php
   <?php
