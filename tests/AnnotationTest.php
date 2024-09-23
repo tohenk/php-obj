@@ -33,10 +33,10 @@ class AnnotationTest extends TestCase
 {
     public function testConvert()
     {
-        $annot = new Annotation(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b', 1]], ['annotation' => '@Test']);
+        $annot = Annotation::of('@Test', ['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b', 1]]);
         $this->assertEquals("@Test(key1=true,\n    key2=\"test\",\n    key3=NULL,\n    array={\"a\",\n        \"b\",\n        1\n    }\n)", (string) $annot, 'Array is properly converted as annotation');
         $this->assertEquals("@Test(key1=true, key2=\"test\", key3=NULL, array={\"a\", \"b\", 1})", (string) $annot->setOption('inline', true), 'Array is properly converted as inlined annotation');
-        $annot = new Annotation(null, ['annotation' => '@Test']);
+        $annot = Annotation::of('@Test');
         $this->assertEquals("@Test", (string) $annot, 'Returns only annotation if value is null');
     }
 }

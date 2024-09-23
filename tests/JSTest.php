@@ -33,7 +33,7 @@ class JSTest extends TestCase
 {
     public function testConvert()
     {
-        $js = new JS(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b', 1]]);
+        $js = JS::create(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b', 1]]);
         $this->assertEquals("{\n    key1: true,\n    key2: 'test',\n    key3: null,\n    array: [\n        'a',\n        'b',\n        1\n    ]\n}", (string) $js, 'Array is properly converted as multiline JS object');
         $this->assertEquals("{key1: true, key2: 'test', key3: null, array: ['a', 'b', 1]}", (string) $js->setOption('inline', true), 'Array is properly converted as inlined JS object');
     }

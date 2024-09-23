@@ -33,6 +33,10 @@ namespace NTLAB\Object;
  */
 abstract class Obj
 {
+    public const EOL = "\n";
+    public const SINGLE_QUOTE = '\'';
+    public const DOUBLE_QUOTE = '"';
+
     /**
      * @var mixed
      */
@@ -130,6 +134,25 @@ abstract class Obj
     }
 
     /**
+     * Quote and escape string.
+     *
+     * @param string $str  String to quote
+     * @param string $quote  Quote string
+     * @return string
+     */
+    protected function quote($str, $quote = self::SINGLE_QUOTE)
+    {
+        switch ($quote) {
+            case static::SINGLE_QUOTE:
+                return $quote.str_replace($quote, '\\\'', $str).$quote;
+            case static::DOUBLE_QUOTE:
+                return $quote.str_replace($quote, '\\"', $str).$quote;
+            default:
+                return $quote.$str.$quote;
+        }
+    }
+
+    /**
      * Wrap text.
      *
      * @param string $lines  The text
@@ -139,7 +162,8 @@ abstract class Obj
     protected function wrapLines($lines, $level = 0)
     {
         if ($wrapper = $this->getOption('wrapper')) {
-            $lines = explode("\n", $lines);
+            $pad = str_repeat($this->getOption('indentation'), $level);
+            $lines = explode(static::EOL, $lines);
             for ($i = 0; $i < count($lines); $i++) {
                 // first line ignored
                 if ($i === 0) {
@@ -147,14 +171,34 @@ abstract class Obj
                 }
                 $line = $lines[$i];
                 if ($level && $i < count($lines) - 1) {
-                    $line = str_repeat($this->getOption('indentation'), $level).$line;
+                    $line = $pad.$line;
                 }
                 $lines[$i] = sprintf($wrapper, $line);
             }
-            $lines = implode("\n", $lines);
+            $lines = implode(static::EOL, $lines);
         }
 
         return $lines;
+    }
+
+    /**
+     * Join lines.
+     *
+     * @param array $lines  Lines to join
+     * @param string $delimiter  Lines delimiter
+     * @param bool $inline  Is inlined join
+     * @return string
+     */
+    protected function joinLines($lines, $delimiter = ',', $inline = null)
+    {
+        if (is_bool($delimiter)) {
+            $inline = $delimiter;
+            $delimiter = null;
+        }
+        $delimiter = null !== $delimiter ? $delimiter : ',';
+        $inline = null !== $inline ? $inline : $this->getOption('inline');
+
+        return implode($delimiter.($inline ? ' ' : static::EOL), $lines);
     }
 
     /**
@@ -182,5 +226,38 @@ abstract class Obj
     public function __toString()
     {
         return $this->getOption('raw') ? $this->value : $this->decorate($this->convert($this->value));
+    }
+
+    /**
+     * Create an object.
+     *
+     * @param mixed $value  The value
+     * @return \NTLAB\Object\Obj
+     */
+    public static function create($value = null, $options = [])
+    {
+        return new static($value, $options);
+    }
+
+    /**
+     * Create a raw object.
+     *
+     * @param mixed $value  The value
+     * @return \NTLAB\Object\Obj
+     */
+    public static function raw($value = null)
+    {
+        return new static($value, ['raw' => true]);
+    }
+
+    /**
+     * Create an inlined object.
+     *
+     * @param mixed $value  The value
+     * @return \NTLAB\Object\Obj
+     */
+    public static function inline($value = null)
+    {
+        return new static($value, ['inline' => true]);
     }
 }

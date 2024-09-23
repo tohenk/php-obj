@@ -38,34 +38,61 @@ class ObjectTest extends TestCase
         $this->obj = new TestObj();
     }
 
-    public function testKeys()
+    public function testIsKeysNumeric()
     {
-        $this->assertTrue($this->obj->isArrayKeysNumeric(['test', 'a']), 'Array keys is numeric if it has no keys');
-        $this->assertTrue($this->obj->isArrayKeysNumeric([0 => 'test', 1 => 'a']), 'Array keys is numeric if it keys start from 0');
-        $this->assertFalse($this->obj->isArrayKeysNumeric(['a' => 'test', 'b' => 'a']), 'Array keys is not numeric if it has non numeric keys');
-        $this->assertFalse($this->obj->isArrayKeysNumeric(['a' => 'test', 1 => 'a']), 'Array keys is not numeric if it has mixed keys');
-        $this->assertFalse($this->obj->isArrayKeysNumeric([1 => 'test', 2 => 'a']), 'Array keys is not numeric if it keys does\'t start from 0');
+        $this->assertTrue($this->obj->isKeysNumeric(['test', 'a']), 'Array keys is numeric if it has no keys');
+        $this->assertTrue($this->obj->isKeysNumeric([0 => 'test', 1 => 'a']), 'Array keys is numeric if it keys start from 0');
+        $this->assertFalse($this->obj->isKeysNumeric(['a' => 'test', 'b' => 'a']), 'Array keys is not numeric if it has non numeric keys');
+        $this->assertFalse($this->obj->isKeysNumeric(['a' => 'test', 1 => 'a']), 'Array keys is not numeric if it has mixed keys');
+        $this->assertFalse($this->obj->isKeysNumeric([1 => 'test', 2 => 'a']), 'Array keys is not numeric if it keys does\'t start from 0');
     }
 
-    public function testWrap()
+    public function testQuote()
+    {
+        $s = 'It\'s "quoted" text';
+        $this->assertEquals('\'It\\\'s "quoted" text\'', $this->obj->quote($s), 'Quoted string in single quote');
+        $this->assertEquals('"It\'s \\"quoted\\" text"', $this->obj->quote($s, TestObj::DOUBLE_QUOTE), 'Quoted string in double quote');
+        $this->assertEquals('`It\'s "quoted" text`', $this->obj->quote($s, '`'), 'Quoted string in custom quote');
+    }
+
+    public function testWrapLines()
     {
         $s = "[\na\nb\nc\n]";
-        $this->assertEquals($s, $this->obj->wrap($s), 'Wrap lines return as is the wrapper option no set');
+        $this->assertEquals($s, $this->obj->wrapLines($s), 'Wrap lines return as is the wrapper option no set');
         $this->obj->setOption('wrapper', '%s');
-        $this->assertEquals($s, $this->obj->wrap($s), 'Wrap lines return as is the level is 0');
-        $this->assertEquals("[\n    a\n    b\n    c\n]", $this->obj->wrap($s, 1), 'Wrap lines return inner content wrapped');
+        $this->assertEquals($s, $this->obj->wrapLines($s), 'Wrap lines return as is the level is 0');
+        $this->assertEquals("[\n    a\n    b\n    c\n]", $this->obj->wrapLines($s, 1), 'Wrap lines return inner content wrapped');
+    }
+
+    public function testJoinLines()
+    {
+        $a = ['a', 'b', 'c'];
+        $this->assertEquals("a,\nb,\nc", $this->obj->joinLines($a), 'Join lines using default delimiter and EOL');
+        $this->assertEquals("a, b, c", $this->obj->joinLines($a, true), 'Join lines using default delimiter and inlined');
+        $this->assertEquals("a;\nb;\nc", $this->obj->joinLines($a, ';'), 'Join lines using semicolon delimiter and EOL');
+        $this->assertEquals("a; b; c", $this->obj->joinLines($a, ';', true), 'Join lines using semicolon delimiter and inlined');
     }
 }
 
 class TestObj extends Obj
 {
-    public function isArrayKeysNumeric($array)
+    public function isKeysNumeric($array)
     {
-        return $this->isKeysNumeric($array);
+        return parent::isKeysNumeric($array);
     }
 
-    public function wrap($lines, $lvl = 0)
+    public function quote($str, $quote = self::SINGLE_QUOTE)
     {
-        return $this->wrapLines($lines, $lvl);
+        return parent::quote($str, $quote);
+    }
+
+    public function wrapLines($lines, $level = 0)
+    {
+        return parent::wrapLines($lines, $level);
+    }
+
+    public function joinLines($lines, $delimiter = ',', $inline = null)
+    {
+        return parent::joinLines($lines, $delimiter, $inline);
     }
 }

@@ -62,15 +62,14 @@ class Annotation extends Obj
         } elseif (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         } elseif (is_string($value)) {
-            $q = '"';
-            $value = $q.str_replace($q, '\\"', $value).$q;
+            $value = $this->quote($value, static::DOUBLE_QUOTE);
         } elseif (null === $value && !$topLevel) {
             $value = 'NULL';
         } elseif (is_array($value)) {
             $tmp = [];
             $useKey = !$this->isKeysNumeric($value);
             $multiline = !$this->getOption('inline') && count($value) > 1;
-            $eol = $multiline ? "\n" : '';
+            $eol = $multiline ? static::EOL : '';
             $skips = $this->getOption('skip_keys');
             foreach ($value as $k => $v) {
                 // skip null value
@@ -88,7 +87,7 @@ class Annotation extends Obj
 
                 $tmp[] = $useKey ? sprintf("%s%s%s", $k, ($inlineList ? ': ' : '='), ($v === null ? 'NULL' : $v)) : $v;
             }
-            $value = implode($multiline ? ",\n" : ', ', $tmp).$eol;
+            $value = $this->joinLines($tmp, !$multiline).$eol;
             if ($topLevel) {
                 $value = sprintf('(%s)', $value);
             } else {
@@ -102,5 +101,17 @@ class Annotation extends Obj
         }
 
         return $value;
+    }
+
+    /**
+     * Create an annotation object.
+     *
+     * @param string $annotation  Annotation identifier
+     * @param mixed $value  The value
+     * @return \NTLAB\Object\Annotation
+     */
+    public static function of($annotation, $value = null)
+    {
+        return new static($value, ['annotation' => $annotation]);
     }
 }

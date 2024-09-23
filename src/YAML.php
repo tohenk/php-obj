@@ -47,9 +47,12 @@ class YAML extends Obj
             $value = $value ? 'true' : 'false';
         } elseif (is_string($value)) {
             // quote string if necessary
-            foreach ([',', ':'] as $special) {
-                if (false != strpos($value, $special)) {
-                    $value = sprintf('\'%s\'', $value);
+            foreach ([',', ':', '@' => true] as $k => $special) {
+                if (false !== ($p = strpos($value, is_string($k) ? $k : $special))) {
+                    if (true === $special && $p > 0) {
+                        continue;
+                    }
+                    $value = $this->quote($value);
                     break;
                 }
             }
@@ -67,7 +70,7 @@ class YAML extends Obj
                     $pad = $inline_size - strlen($k) - strlen($spacer) - 3; // colon and separator
                     $x = $pad > 0 && $level >= 0 ? str_repeat(' ', $pad) : '';
                     if ($inline && $this->canBeInlined($v)) {
-                        $v = explode("\n", $this->convert($v, -1));
+                        $v = explode(static::EOL, $this->convert($v, -1));
                         $tmp[] = $spacer.sprintf('%s: %s{%s}', $k, $x, implode(', ', $v));
                     } else {
                         if ($this->isInline($v)) {
@@ -83,18 +86,18 @@ class YAML extends Obj
                         }
                     }
                 }
-                $value = implode("\n", $tmp);
+                $value = implode(static::EOL, $tmp);
             } else {
                 foreach ($value as $k => $v) {
                     if (is_array($v) && !$this->isKeysNumeric($v)) {
-                        $v = explode("\n", $this->convert($v, -1));
+                        $v = explode(static::EOL, $this->convert($v, -1));
                         $tmp[] = sprintf('{%s}', implode(', ', $v));
                     } else {
                         $tmp[] = $this->convert($v, $level + 1);
                     }
                 }
                 if ($this->isArrayValueArray($value)) {
-                    $value = implode("\n", array_map(function($x) use ($spacer) {
+                    $value = implode(static::EOL, array_map(function($x) use ($spacer) {
                         return $spacer.sprintf('- %s', $x);
                     }, $tmp));
                 } else {

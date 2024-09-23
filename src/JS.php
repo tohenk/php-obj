@@ -44,15 +44,14 @@ class JS extends Obj
         } elseif (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         } elseif (is_string($value)) {
-            $q = '\'';
-            $value = $q.str_replace($q, '\\\'', $value).$q;
+            $value = $this->quote($value);
         } elseif (null === $value) {
             $value = 'null';
         } elseif (is_array($value)) {
             $tmp = [];
             $useKey = !$this->isKeysNumeric($value);
             $multiline = !$this->getOption('inline');
-            $eol = $multiline ? "\n" : '';
+            $eol = $multiline ? static::EOL : '';
             foreach ($value as $k => $v) {
                 // skip null value
                 if (null === $v && $this->getOption('skip_null')) {
@@ -61,7 +60,7 @@ class JS extends Obj
                 $v = $this->convert($v);
                 $tmp[] = $useKey ? sprintf('%s: %s', $k, $v) : $v;
             }
-            $value = $eol.implode($multiline ? ",\n" : ', ', $tmp).$eol;
+            $value = $eol.$this->joinLines($tmp).$eol;
             if ($useKey) {
                 $value = sprintf('{%s}', $value);
             } else {

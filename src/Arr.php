@@ -44,15 +44,14 @@ class Arr extends Obj
         } elseif (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         } elseif (is_string($value)) {
-            $q = '\'';
-            $value = $q.str_replace($q, '\\\'', $value).$q;
+            $value = $this->quote($value);
         } elseif (null === $value) {
             $value = 'null';
         } elseif (is_array($value)) {
             $tmp = [];
             $useKey = !$this->isKeysNumeric($value);
             $multiline = !$this->getOption('inline');
-            $eol = $multiline ? "\n" : '';
+            $eol = $multiline ? static::EOL : '';
             foreach ($value as $k => $v) {
                 // skip null value
                 if (null === $v && $this->getOption('skip_null')) {
@@ -61,8 +60,7 @@ class Arr extends Obj
                 $v = $this->convert($v, 1);
                 $tmp[] = $useKey ? sprintf('\'%s\' => %s', $k, $v) : $v;
             }
-            $value = $eol.implode($multiline ? ",\n" : ', ', $tmp).$eol;
-            $value = sprintf('[%s]', $value);
+            $value = sprintf('[%s]', $eol.$this->joinLines($tmp).$eol);
             if ($multiline) {
                 $value = $this->wrapLines($value, 1);
             }

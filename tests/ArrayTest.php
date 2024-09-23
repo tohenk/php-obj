@@ -33,7 +33,7 @@ class ArrayTest extends TestCase
 {
     public function testConvert()
     {
-        $arr = new Arr(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2]]]);
+        $arr = Arr::create(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2]]]);
         $this->assertEquals("[\n    'key1' => true,\n    'key2' => 'test',\n    'key3' => null,\n    'array' => [\n        'a',\n        'b\'c',\n        [\n            1,\n            2\n        ]\n    ]\n]", (string) $arr, 'Array is properly converted as array representation');
         $this->assertEquals("['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2]]]", (string) $arr->setOption('inline', true), 'Array is properly converted as inlined array representation');
     }
