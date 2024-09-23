@@ -50,7 +50,7 @@ class PHP extends Obj
         } elseif (is_array($value)) {
             $tmp = [];
             $useKey = !$this->isKeysNumeric($value);
-            $multiline = !$this->getOption('inline');
+            $multiline = !$this->getOption('inline') && !$this->isKeysNumeric($value);
             $eol = $multiline ? static::EOL : '';
             foreach ($value as $k => $v) {
                 // skip null value
@@ -60,7 +60,7 @@ class PHP extends Obj
                 $v = $this->convert($v, 1);
                 $tmp[] = $useKey ? sprintf('\'%s\' => %s', $k, $v) : $v;
             }
-            $value = sprintf('[%s]', $eol.$this->joinLines($tmp).$eol);
+            $value = sprintf('[%s]', $eol.$this->joinLines($tmp, !$multiline).$eol);
             if ($multiline) {
                 $value = $this->wrapLines($value, 1);
             }
