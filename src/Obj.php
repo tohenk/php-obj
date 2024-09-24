@@ -229,6 +229,50 @@ abstract class Obj
     }
 
     /**
+     * Get value from callback
+     *
+     * @param string $callback  Callback name
+     * @param mixed $value  The value
+     * @return mixed
+     */
+    protected function callCallback($callback, $value)
+    {
+        if (is_callable($callable = $this->getOption($callback))) {
+            return call_user_func_array($callable, [$value]);
+        }
+    }
+
+    /**
+     * Filter value for pre processing.
+     * 
+     * If a `pre.process` option is passed, then it will be called to
+     * filter value before further processing.
+     *
+     * @param mixed $value  The value
+     */
+    protected function preProcess(&$value)
+    {
+        if (null !== ($v = $this->callCallback('pre.process', $value))) {
+            $value = $v;
+        }
+    }
+
+    /**
+     * Filter value for post processing.
+     * 
+     * If a `post.process` option is passed, then it will be called to
+     * filter value after further processing.
+     *
+     * @param mixed $value  The value
+     */
+    protected function postProcess(&$value)
+    {
+        if (null !== ($v = $this->callCallback('post.process', $value))) {
+            $value = $v;
+        }
+    }
+
+    /**
      * Get value using callback.
      * 
      * If a `callback` option is passed, then it will be called to
@@ -239,10 +283,8 @@ abstract class Obj
      */
     protected function valueFromCallback($value)
     {
-        if (is_callable($callable = $this->getOption('callback'))) {
-            if (null !== ($v = call_user_func_array($callable, [$value]))) {
-                return $v;
-            }
+        if (null !== ($v = $this->callCallback('callback', $value))) {
+            return $v;
         }
     }
 

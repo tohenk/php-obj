@@ -33,12 +33,27 @@ class CallbackTest extends TestCase
 {
     public function testCallback()
     {
-        $arr = PHP::create(['var1' => new PHPVar('myvar'), 'var2' => new MyClass('test')], ['callback' => function($value) {
-            if ($value instanceof PHPVar) {
-                return sprintf('$%s', $value->var);
+        $arr = PHP::create(['var1' => new PHPVar('myvar'), 'var2' => new MyClass('test')], [
+            'callback' => function($value) {
+                if ($value instanceof PHPVar) {
+                    return sprintf('$%s', $value->var);
+                }
             }
-        }]);
+        ]);
         $this->assertEquals("[\n    'var1' => \$myvar,\n    'var2' => new MyClass('test')\n]", (string) $arr, 'A callback properly convert object value');
+    }
+
+    public function testFilter()
+    {
+        $arr = PHP::create(['a' => '%myvar%'], [
+            'inline' => true,
+            'post.process' => function($value) {
+                if (is_string($value) && preg_match('/%([^%]+)%/', $value, $matches)) {
+                    return str_replace($matches[0], sprintf("'.\$this->getVar('%s').'", $matches[1]), $value);
+                }
+            }
+        ]);
+        $this->assertEquals("['a' => ''.\$this->getVar('myvar').'']", (string) $arr, 'A callback properly processing the value');
     }
 }
 

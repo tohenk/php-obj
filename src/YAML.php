@@ -39,6 +39,8 @@ class YAML extends Obj
      */
     protected function convert($value, $level = 0)
     {
+        $this->preProcess($value);
+
         if (null !== ($v = $this->valueFromCallback($value))) {
             return $v;
         }
@@ -111,6 +113,7 @@ class YAML extends Obj
         } else {
             $value = $this->asDefault($value);
         }
+        $this->postProcess($value);
 
         return $value;
     }

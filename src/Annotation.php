@@ -44,6 +44,8 @@ class Annotation extends Obj
      */
     protected function convert($value, $options = [])
     {
+        $this->preProcess($value);
+
         if (null !== ($v = $this->valueFromCallback($value))) {
             return $v;
         }
@@ -93,6 +95,7 @@ class Annotation extends Obj
         } else {
             $value = $this->asDefault($value);
         }
+        $this->postProcess($value);
 
         return $value;
     }

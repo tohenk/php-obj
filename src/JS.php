@@ -39,6 +39,8 @@ class JS extends Obj
      */
     protected function convert($value)
     {
+        $this->preProcess($value);
+
         if (null !== ($v = $this->valueFromCallback($value))) {
             return $v;
         }
@@ -76,6 +78,7 @@ class JS extends Obj
         } else {
             $value = $this->asDefault($value);
         }
+        $this->postProcess($value);
 
         return $value;
     }
