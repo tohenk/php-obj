@@ -26,6 +26,8 @@
 
 namespace NTLAB\Object;
 
+use stdClass;
+
 /**
  * A base class to represent PHP object.
  *
@@ -254,6 +256,10 @@ abstract class Obj
     {
         if (null !== ($v = $this->callCallback('pre.process', $value))) {
             $value = $v;
+        }
+        // convert stdClass to array
+        if ($value instanceof stdClass) {
+            $value = (array) $value;
         }
     }
 
