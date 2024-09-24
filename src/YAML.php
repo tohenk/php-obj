@@ -104,6 +104,8 @@ class YAML extends Obj
                     $value = sprintf('[%s]', implode(', ', $tmp));
                 }
             }
+        } else {
+            $value = $this->asDefault($value);
         }
 
         return $value;

@@ -87,7 +87,7 @@ class Annotation extends Obj
                 $value = $this->wrapLines($value, 1);
             }
         } else {
-            $value = (string) $value;
+            $value = $this->asDefault($value);
         }
 
         return $value;

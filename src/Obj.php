@@ -229,6 +229,29 @@ abstract class Obj
     }
 
     /**
+     * Get value as default representation.
+     * 
+     * If a `callback` option is passed, then it will be called to
+     * represents the value and will be returned as the representation.
+     *
+     * @param mixed $value  The value
+     * @return string
+     */
+    protected function asDefault($value)
+    {
+        if (is_callable($callable = $this->getOption('callback'))) {
+            if (null !== ($v = call_user_func_array($callable, [$value]))) {
+                return $v;
+            }
+        }
+        if (is_object($value) && method_exists($value, 'asString')) {
+            $value = $value->asString($this);
+        }
+
+        return (string) $value;
+    }
+
+    /**
      * Decorate generated value.
      *
      * @param string $value  The generated value
