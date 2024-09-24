@@ -39,6 +39,10 @@ class PHP extends Obj
      */
     protected function convert($value)
     {
+        if (null !== ($v = $this->valueFromCallback($value))) {
+            return $v;
+        }
+
         if ($value instanceof PHP) {
             $value = (string) $value;
         } elseif (is_bool($value)) {

@@ -44,6 +44,10 @@ class Annotation extends Obj
      */
     protected function convert($value, $options = [])
     {
+        if (null !== ($v = $this->valueFromCallback($value))) {
+            return $v;
+        }
+
         $topLevel = isset($options['top']) ? (bool) $options['top'] : true;
         $inlineList = isset($options['inline']) ? (bool) $options['inline'] : false;
 

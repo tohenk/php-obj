@@ -39,6 +39,10 @@ class YAML extends Obj
      */
     protected function convert($value, $level = 0)
     {
+        if (null !== ($v = $this->valueFromCallback($value))) {
+            return $v;
+        }
+
         if ($value instanceof YAML) {
             $value = (string) $value;
         } elseif (null === $value) {
