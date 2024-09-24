@@ -38,7 +38,7 @@ class ArrayTest extends TestCase
         $this->assertEquals("[\n    'key1' => true,\n    'key2' => 'test',\n    'key3' => null,\n    'array' => ['a', 'b\'c', [1, 2]]\n]", (string) $arr, 'Array is properly converted as string representation');
         $this->assertEquals("['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2]]]", (string) $arr->setOption('inline', true), 'Array is properly converted as inlined string representation');
         $data = (object) ['a' => 'test', 'b' => true];
-        $arr = PHP::create($data);
+        $arr = PHP::create($data, ['stdclass_as_array' => true]);
         $this->assertEquals(get_class($data), stdClass::class, 'Object is a stdClass');
         $this->assertEquals("[\n    'a' => 'test',\n    'b' => true\n]", (string) $arr, 'A stdClass is properly converted as string representation');
     }

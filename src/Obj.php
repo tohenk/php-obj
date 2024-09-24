@@ -54,6 +54,7 @@ abstract class Obj
         'inline' => false,
         'skip_null' => false,
         'skip_keys' => [],
+        'stdclass_as_array' => false,
         'wrapper' => '%s',
         'level' => null,
         'indentation' => '    ',
@@ -258,7 +259,7 @@ abstract class Obj
             $value = $v;
         }
         // convert stdClass to array
-        if ($value instanceof stdClass) {
+        if ($this->getOption('stdclass_as_array') && $value instanceof stdClass) {
             $value = (array) $value;
         }
     }
