@@ -35,7 +35,7 @@ class ObjectTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->obj = new TestObj();
+        $this->obj = TestObj::create("first\nsecond\n\nthird");
     }
 
     public function testIsKeysNumeric()
@@ -59,9 +59,10 @@ class ObjectTest extends TestCase
     {
         $s = "[\na\nb\nc\n]";
         $this->assertEquals($s, $this->obj->wrapLines($s), 'Wrap lines return as is the wrapper option no set');
-        $this->obj->setOption('wrapper', '%s');
         $this->assertEquals($s, $this->obj->wrapLines($s), 'Wrap lines return as is the level is 0');
         $this->assertEquals("[\n    a\n    b\n    c\n]", $this->obj->wrapLines($s, 1), 'Wrap lines return inner content wrapped');
+        $whitespace = "[\none\n    \n\ntwo\n]";
+        $this->assertEquals("[\n    one\n        \n\n    two\n]", $this->obj->wrapLines($whitespace, 1), 'Wrap lines return inner content wrapped');
     }
 
     public function testJoinLines()
@@ -71,6 +72,12 @@ class ObjectTest extends TestCase
         $this->assertEquals("a, b, c", $this->obj->joinLines($a, true), 'Join lines using default delimiter and inlined');
         $this->assertEquals("a;\nb;\nc", $this->obj->joinLines($a, ';'), 'Join lines using semicolon delimiter and EOL');
         $this->assertEquals("a; b; c", $this->obj->joinLines($a, ';', true), 'Join lines using semicolon delimiter and inlined');
+    }
+
+    public function testLevel()
+    {
+        $this->obj->setOption('level', 1);
+        $this->assertEquals("    first\n    second\n\n    third", (string) $this->obj, 'Output is leveled');
     }
 }
 
@@ -86,9 +93,9 @@ class TestObj extends Obj
         return parent::quote($str, $quote);
     }
 
-    public function wrapLines($lines, $level = 0)
+    public function wrapLines($lines, $level = 0, $flags = self::WRAP_SKIP_FIRST | self::WRAP_SKIP_LAST)
     {
-        return parent::wrapLines($lines, $level);
+        return parent::wrapLines($lines, $level, $flags);
     }
 
     public function joinLines($lines, $delimiter = ',', $inline = null)

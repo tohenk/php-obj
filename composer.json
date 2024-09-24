@@ -1,9 +1,9 @@
 {
 	"name" : "ntlab/php-obj",
 	"type" : "library",
-	"description" : "A PHP object representation as string array, javascript, annotation, or YAML",
+	"description" : "A PHP object representation as string, javascript, annotation, or YAML",
 	"keywords" : [
-		"array",
+		"PHP",
 		"javascript",
 		"annotation",
 		"YAML"

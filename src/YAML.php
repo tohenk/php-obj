@@ -37,7 +37,7 @@ class YAML extends Obj
      * (non-PHPdoc)
      * @see \NTLAB\Object\Obj::convert()
      */
-    public function convert($value, $level = 0)
+    protected function convert($value, $level = 0)
     {
         if ($value instanceof YAML) {
             $value = (string) $value;
@@ -58,7 +58,7 @@ class YAML extends Obj
             }
         } elseif (is_array($value)) {
             $tmp = [];
-            $spacer = $level > 0 ? str_repeat($this->getOption('indentation'), $level) : '';
+            $spacer = $level > 0 ? $this->getPadding($level) : '';
             if (!$this->isKeysNumeric($value)) {
                 $inline = $this->getOption('inline');
                 $inline_size = $this->getOption('inline_size', 0);

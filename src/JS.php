@@ -37,7 +37,7 @@ class JS extends Obj
      * (non-PHPdoc)
      * @see \NTLAB\Object\Obj::convert()
      */
-    public function convert($value)
+    protected function convert($value)
     {
         if ($value instanceof JS) {
             $value = (string) $value;

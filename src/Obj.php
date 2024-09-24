@@ -36,6 +36,8 @@ abstract class Obj
     public const EOL = "\n";
     public const SINGLE_QUOTE = '\'';
     public const DOUBLE_QUOTE = '"';
+    public const WRAP_SKIP_FIRST = 1;
+    public const WRAP_SKIP_LAST = 2;
 
     /**
      * @var mixed
@@ -51,6 +53,7 @@ abstract class Obj
         'skip_null' => false,
         'skip_keys' => [],
         'wrapper' => '%s',
+        'level' => null,
         'indentation' => '    ',
     ];
 
@@ -153,27 +156,51 @@ abstract class Obj
     }
 
     /**
+     * Get line padding.
+     *
+     * @param int $level Padding level to multiply with indentation
+     * @return string
+     */
+    protected function getPadding($level)
+    {
+        if (null !== $level) {
+            return str_repeat($this->getOption('indentation'), $level);
+        }
+    }
+
+    /**
      * Wrap text.
      *
      * @param string $lines  The text
      * @param int $level  Indentation level
+     * @param int $flags  Wrapping flags
      * @return string
      */
-    protected function wrapLines($lines, $level = 0)
+    protected function wrapLines($lines, $level = 0, $flags = self::WRAP_SKIP_FIRST | self::WRAP_SKIP_LAST)
     {
         if ($wrapper = $this->getOption('wrapper')) {
-            $pad = str_repeat($this->getOption('indentation'), $level);
+            $pad = $this->getPadding($level);
             $lines = explode(static::EOL, $lines);
-            for ($i = 0; $i < count($lines); $i++) {
-                // first line ignored
-                if ($i === 0) {
-                    continue;
-                }
+            $i = 0;
+            $n = count($lines);
+            // is first line skipped?
+            if (($flags & static::WRAP_SKIP_FIRST) === static::WRAP_SKIP_FIRST) {
+                $i++;
+            }
+            // is last line skipped?
+            if (($flags & static::WRAP_SKIP_LAST) === static::WRAP_SKIP_LAST) {
+                $n--;
+            }
+            for (; $i < $n; $i++) {
                 $line = $lines[$i];
-                if ($level && $i < count($lines) - 1) {
-                    $line = $pad.$line;
+                if ($level) {
+                    if ('' !== $line) {
+                        $line = sprintf($wrapper, $pad.$line);
+                    }
                 }
-                $lines[$i] = sprintf($wrapper, $line);
+                if ($lines[$i] !== $line) {
+                    $lines[$i] = $line;
+                }
             }
             $lines = implode(static::EOL, $lines);
         }
@@ -202,14 +229,14 @@ abstract class Obj
     }
 
     /**
-     * Decorate generated code.
+     * Decorate generated value.
      *
-     * @param string $code  The generated code
+     * @param string $value  The generated value
      * @return string
      */
-    protected function decorate($code)
+    protected function decorate($value)
     {
-        return $code;
+        return $value;
     }
 
     /**
@@ -225,7 +252,15 @@ abstract class Obj
 
     public function __toString()
     {
-        return $this->getOption('raw') ? $this->value : $this->decorate($this->convert($this->value));
+        $value = $this->value;
+        if (!$this->getOption('raw')) {
+            $value = $this->decorate($this->convert($value));
+            if (($lvl = $this->getOption('level')) && false !== strpos($value, static::EOL)) {
+                $value = $this->wrapLines($value, $lvl, 0);
+            }
+        }
+
+        return (string) $value;
     }
 
     /**

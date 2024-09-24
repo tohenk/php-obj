@@ -39,23 +39,13 @@ class Annotation extends Obj
     }
 
     /**
-     * Convert value as code equivalent.
-     *
-     * @param mixed $value  The value
-     * @param bool $topLevel  Is this method being called from top level
-     * @return string
+     * (non-PHPdoc)
+     * @see \NTLAB\Object\Obj::convert()
      */
-    public function convert($value)
+    protected function convert($value, $options = [])
     {
-        $topLevel = true;
-        if (func_num_args() > 1 && false === func_get_arg(1)) {
-            $topLevel = false;
-        }
-
-        $inlineList = false;
-        if (func_num_args() > 2) {
-            $inlineList = func_get_arg(2);
-        }
+        $topLevel = isset($options['top']) ? (bool) $options['top'] : true;
+        $inlineList = isset($options['inline']) ? (bool) $options['inline'] : false;
 
         if ($value instanceof Annotation) {
             $value = (string) $value;
@@ -80,7 +70,7 @@ class Annotation extends Obj
                 if (is_array($skips) && count($skips) && in_array($k, $skips)) {
                     continue;
                 }
-                $v = $this->convert($v, false, true);
+                $v = $this->convert($v, ['top' => false, 'inline' => true]);
                 if (false === $topLevel) {
                     $k = sprintf('"%s"', $k);
                 }

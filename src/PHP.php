@@ -37,7 +37,7 @@ class PHP extends Obj
      * (non-PHPdoc)
      * @see \NTLAB\Object\Obj::convert()
      */
-    public function convert($value, $level = 0)
+    protected function convert($value)
     {
         if ($value instanceof PHP) {
             $value = (string) $value;
