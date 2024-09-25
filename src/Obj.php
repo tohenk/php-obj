@@ -40,6 +40,9 @@ abstract class Obj
     public const DOUBLE_QUOTE = '"';
     public const WRAP_SKIP_FIRST = 1;
     public const WRAP_SKIP_LAST = 2;
+    public const JOIN_INLINE = 1;
+    public const JOIN_MULTILINE = 2;
+    public const JOIN_LAST_DELIMITER = 4;
 
     /**
      * @var mixed
@@ -216,19 +219,30 @@ abstract class Obj
      *
      * @param array $lines  Lines to join
      * @param string $delimiter  Lines delimiter
-     * @param bool $inline  Is inlined join
+     * @param int $flags  Join flags
      * @return string
      */
-    protected function joinLines($lines, $delimiter = ',', $inline = null)
+    protected function joinLines($lines, $delimiter = ',', $flags = 0)
     {
-        if (is_bool($delimiter)) {
-            $inline = $delimiter;
+        if (null !== $delimiter && !is_string($delimiter)) {
+            $flags = $delimiter;
             $delimiter = null;
         }
         $delimiter = null !== $delimiter ? $delimiter : ',';
-        $inline = null !== $inline ? $inline : $this->getOption('inline');
+        $lastDelimiter = ($flags & static::JOIN_LAST_DELIMITER) === static::JOIN_LAST_DELIMITER; 
+        switch (true) {
+            case ($flags & static::JOIN_INLINE) === static::JOIN_INLINE:
+                $inline = true;
+                break;
+            case ($flags & static::JOIN_MULTILINE) === static::JOIN_MULTILINE:
+                $inline = false;
+                break;
+            default:
+                $inline = $this->getOption('inline');
+        }
 
-        return implode($delimiter.($inline ? ' ' : static::EOL), $lines);
+        return implode($delimiter.($inline ? ' ' : static::EOL), $lines).
+            ($lastDelimiter && count($lines) ? $delimiter.($inline ? ' ' : '') : '');
     }
 
     /**

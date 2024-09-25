@@ -69,9 +69,10 @@ class ObjectTest extends TestCase
     {
         $a = ['a', 'b', 'c'];
         $this->assertEquals("a,\nb,\nc", $this->obj->joinLines($a), 'Join lines using default delimiter and EOL');
-        $this->assertEquals("a, b, c", $this->obj->joinLines($a, true), 'Join lines using default delimiter and inlined');
+        $this->assertEquals("a, b, c", $this->obj->joinLines($a, TestObj::JOIN_INLINE), 'Join lines using default delimiter and inlined');
         $this->assertEquals("a;\nb;\nc", $this->obj->joinLines($a, ';'), 'Join lines using semicolon delimiter and EOL');
-        $this->assertEquals("a; b; c", $this->obj->joinLines($a, ';', true), 'Join lines using semicolon delimiter and inlined');
+        $this->assertEquals("a; b; c", $this->obj->joinLines($a, ';', TestObj::JOIN_INLINE), 'Join lines using semicolon delimiter and inlined');
+        $this->assertEquals("", $this->obj->joinLines([], ';', TestObj::JOIN_LAST_DELIMITER), 'Join lines ignore last delimiter if lines is empty');
     }
 
     public function testLevel()
@@ -98,8 +99,8 @@ class TestObj extends Obj
         return parent::wrapLines($lines, $level, $flags);
     }
 
-    public function joinLines($lines, $delimiter = ',', $inline = null)
+    public function joinLines($lines, $delimiter = ',', $flags = 0)
     {
-        return parent::joinLines($lines, $delimiter, $inline);
+        return parent::joinLines($lines, $delimiter, $flags);
     }
 }

@@ -83,7 +83,7 @@ class Annotation extends Obj
 
                 $tmp[] = $useKey ? sprintf("%s%s%s", $k, ($inlineList ? ': ' : '='), ($v === null ? 'NULL' : $v)) : $v;
             }
-            $value = $this->joinLines($tmp, !$multiline).$eol;
+            $value = $this->joinLines($tmp, $multiline ? static::JOIN_MULTILINE : static::JOIN_INLINE).$eol;
             if ($topLevel) {
                 $value = sprintf('(%s)', $value);
             } else {

@@ -58,6 +58,10 @@ class PHP extends Obj
             $useKey = !$this->isKeysNumeric($value);
             $multiline = !$this->getOption('inline') && !$this->isKeysNumeric($value);
             $eol = $multiline ? static::EOL : '';
+            $flags = $multiline ? static::JOIN_MULTILINE : static::JOIN_INLINE;
+            if ($this->getOption('trailing_delimiter')) {
+                $flags |= static::JOIN_LAST_DELIMITER;
+            }
             foreach ($value as $k => $v) {
                 // skip null value
                 if (null === $v && $this->getOption('skip_null')) {
@@ -66,7 +70,7 @@ class PHP extends Obj
                 $v = $this->convert($v, 1);
                 $tmp[] = $useKey ? sprintf('\'%s\' => %s', $k, $v) : $v;
             }
-            $value = sprintf('[%s]', $eol.$this->joinLines($tmp, !$multiline).$eol);
+            $value = sprintf('[%s]', $eol.$this->joinLines($tmp, $flags).$eol);
             if ($multiline) {
                 $value = $this->wrapLines($value, 1);
             }

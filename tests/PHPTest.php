@@ -30,13 +30,18 @@ use PHPUnit\Framework\TestCase;
 use NTLAB\Object\PHP;
 use stdClass;
 
-class ArrayTest extends TestCase
+class PHPTest extends TestCase
 {
     public function testConvert()
     {
         $arr = PHP::create(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2]]]);
         $this->assertEquals("[\n    'key1' => true,\n    'key2' => 'test',\n    'key3' => null,\n    'array' => ['a', 'b\'c', [1, 2]]\n]", (string) $arr, 'Array is properly converted as string representation');
         $this->assertEquals("['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2]]]", (string) $arr->setOption('inline', true), 'Array is properly converted as inlined string representation');
+        $arr
+            ->setOption('trailing_delimiter', true)
+            ->setOption('inline', false);
+        $this->assertEquals("[\n    'key1' => true,\n    'key2' => 'test',\n    'key3' => null,\n    'array' => ['a', 'b\'c', [1, 2, ], ],\n]", (string) $arr, 'Array is properly converted as string representation with trailing delimiter');
+        $this->assertEquals("['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b\'c', [1, 2, ], ], ]", (string) $arr->setOption('inline', true), 'Array is properly converted as inlined string representation with trailing delimiter');
         $data = (object) ['a' => 'test', 'b' => true];
         $arr = PHP::create($data, ['stdclass_as_array' => true]);
         $this->assertEquals(get_class($data), stdClass::class, 'Object is a stdClass');
