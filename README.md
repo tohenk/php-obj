@@ -1,9 +1,9 @@
 # A PHP Object Representation
 
 ![Build Status](https://github.com/tohenk/php-obj/actions/workflows/continuous-integration.yml/badge.svg)
-[![Latest Stable Version](https://poser.pugx.org/tohenk/php-obj/v/stable.svg)](https://packagist.org/packages/ntlab/php-obj)
-[![Total Downloads](https://poser.pugx.org/tohenk/php-obj/downloads.svg)](https://packagist.org/packages/ntlab/php-obj) 
-[![License](https://poser.pugx.org/tohenk/php-obj/license.svg)](https://packagist.org/packages/ntlab/php-obj)
+[![Latest Stable Version](https://poser.pugx.org/ntlab/php-obj/v/stable.svg)](https://packagist.org/packages/ntlab/php-obj)
+[![Total Downloads](https://poser.pugx.org/ntlab/php-obj/downloads.svg)](https://packagist.org/packages/ntlab/php-obj) 
+[![License](https://poser.pugx.org/ntlab/php-obj/license.svg)](https://packagist.org/packages/ntlab/php-obj)
 
 Represent PHP object as string, javascript, annotation, or YAML.
 
