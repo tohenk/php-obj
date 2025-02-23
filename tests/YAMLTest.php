@@ -3,7 +3,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2024 Toha <tohenk@yahoo.com>
+ * Copyright (c) 2024-2025 Toha <tohenk@yahoo.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ class YAMLTest extends TestCase
         $yaml = YAML::create(['key1' => true, 'key2' => 'test', 'key3' => null, 'array' => ['a', 'b', 1], 'test' => ['a' => 'value1', 'b' => 'value2'], 'x' => [['y'], ['z']]]);
         $this->assertEquals("key1: true\nkey2: test\nkey3: ~\narray: [a, b, 1]\ntest:\n    a: value1\n    b: value2\nx:\n    - [y]\n    - [z]", (string) $yaml, 'Array is properly converted as YAML');
         $this->assertEquals("key1: true\nkey2: test\nkey3: ~\narray: [a, b, 1]\ntest: {a: value1, b: value2}\nx:\n    - [y]\n    - [z]", (string) $yaml->setOption('inline', true), 'Array is properly converted as inlined YAML');
-        $yaml = YAML::create(['a' => 'One, two, three', 'b' => 'a: b', 'c' => '@something']);
-        $this->assertEquals("a: 'One, two, three'\nb: 'a: b'\nc: '@something'", (string) $yaml, 'YAML specials value properly converted');
+        $yaml = YAML::create(['a' => 'One, two, three', 'b' => 'a: b', 'c' => '@something', 'd' => '[]', 'e' => '{}']);
+        $this->assertEquals("a: 'One, two, three'\nb: 'a: b'\nc: '@something'\nd: '[]'\ne: '{}'", (string) $yaml, 'YAML specials value properly converted');
     }
 }

@@ -3,7 +3,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2024 Toha <tohenk@yahoo.com>
+ * Copyright (c) 2024-2025 Toha <tohenk@yahoo.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,14 +53,27 @@ class YAML extends Obj
             $value = $value ? 'true' : 'false';
         } elseif (is_string($value)) {
             // quote string if necessary
-            foreach ([',', ':', '@' => true] as $k => $special) {
-                if (false !== ($p = strpos($value, is_string($k) ? $k : $special))) {
-                    if (true === $special && $p > 0) {
-                        continue;
-                    }
-                    $value = $this->quote($value);
-                    break;
+            $quote = false;
+            if (!$quote) {
+                if (
+                    (substr($value, 0, 1) === '[' && substr($value, -1) === ']') ||
+                    (substr($value, 0, 1) === '{' && substr($value, -1) === '}')) {
+                    $quote = true;
                 }
+            }
+            if (!$quote) {
+                foreach ([',', ':', '@' => true, '^' => true] as $k => $special) {
+                    if (false !== ($p = strpos($value, is_string($k) ? $k : $special))) {
+                        if (true === $special && $p > 0) {
+                            continue;
+                        }
+                        $quote = true;
+                        break;
+                    }
+                }
+            }
+            if ($quote) {
+                $value = $this->quote($value);
             }
         } elseif (is_array($value)) {
             $tmp = [];
