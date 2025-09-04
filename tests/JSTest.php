@@ -38,5 +38,7 @@ class JSTest extends TestCase
         $this->assertEquals("{key1: true, key2: 'test', key3: null, array: ['a', 'b', 1]}", (string) $js->setOption('inline', true), 'Array is properly converted as inlined JS object');
         $js = JS::create(['a' => 'b', 'b' => JS::create(['c' => 'd'])]);
         $this->assertEquals("{\n    a: 'b',\n    b: {\n        c: 'd'\n    }\n}", (string) $js, 'Nested object is properly converted as JS object');
+        $js = JS::inline(['test' => JS::raw('test')]);
+        $this->assertEquals("{test}", (string) $js, 'Can generate simple object');
     }
 }

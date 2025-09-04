@@ -57,14 +57,15 @@ class JS extends Obj
             $tmp = [];
             $useKey = !$this->isKeysNumeric($value);
             $multiline = !$this->getOption('inline');
+            $skipNull = $this->getOption('skip_null');
             $eol = $multiline ? static::EOL : '';
             foreach ($value as $k => $v) {
                 // skip null value
-                if (null === $v && $this->getOption('skip_null')) {
+                if (null === $v && $skipNull) {
                     continue;
                 }
                 $v = $this->convert($v);
-                $tmp[] = $useKey ? sprintf('%s: %s', $k, $v) : $v;
+                $tmp[] = $useKey && $k !== $v ? sprintf('%s: %s', $k, $v) : $v;
             }
             $value = $eol.$this->joinLines($tmp).$eol;
             if ($useKey) {
